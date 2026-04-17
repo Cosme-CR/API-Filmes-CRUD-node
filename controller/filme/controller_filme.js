@@ -6,7 +6,7 @@
  *****************************************************************************************/ 
 
 //import do arquivo de padronizacao de mensagens 
-const config_message = require("..modulo/config_message.js")
+const config_message = require("../modulo/configMessages.js")
 
 
 
@@ -77,7 +77,7 @@ async function buscarFilme(params) {
 
 
 
-module.exports{
+module.exports = {
     inserirNovoFilme,
 }
 //
