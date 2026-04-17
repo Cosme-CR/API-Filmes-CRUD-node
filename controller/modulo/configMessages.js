@@ -25,7 +25,16 @@ const ERROR_BAD_REQUEST ={
     message:            "os dados enviado na requisicao nao estao corretos "
 }
 
+// mensagem de erro na api
+const SUCESS_CREATED_ITEM = {
+    status:             true,
+    status_code:        201,
+    message:            "registro inserido"
+
+}
+
 module.exports{
-    defaultMenssages,
-    ERROR_BAD_REQUEST
+    DEFAULT_MESSAGE,
+    ERROR_BAD_REQUEST,
+    SUCESS_CREATED_ITEM
 }
