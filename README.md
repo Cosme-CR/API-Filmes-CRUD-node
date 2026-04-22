@@ -13,7 +13,7 @@ O sistema realiza operações de **CRUD completo** para gerenciamento de filmes,
 
 ---
 
-## Tecnologias Utilizadas
+## Tecnologias Usadas
 
 - Node.js
 - Express.js
