@@ -26,7 +26,7 @@ async function inserirNovoFilme(filme) {
     }else if(filme.data_lancamento == ""|| filme.data_lancamento == null || filme.data_lancamento == undefined || filme.data_lancamento.length != 10 ){
         message.ERROR_BAD_REQUEST.field = "[DATA_LANCAMEMTO] invalido"
     //VALIDA DURACAO
-    }else if (filme.deuracao == ""      || filme.deuracao == null        || filme.deuracao == undefined        || filme.deuracao.length  < 5  ){
+    }else if (filme.duracao == ""      || filme.duracao == null        || filme.duracao == undefined        || filme.duracao.length  < 5  ){
         message.ERROR_BAD_REQUEST.field = "[DURACAO] invalido"
     //VALIDA SINOPSE
     }else if (filme.sinopse == ""       || filme.sinopse == null         || filme.sinopse == undefined ){
@@ -41,6 +41,7 @@ async function inserirNovoFilme(filme) {
     }else if(filme.capa.length > 255){
         message.ERROR_BAD_REQUEST.field = "VALOR invalido"
     }else{
+        // manda os filmes para o DAO
         let result = await filmeDAO.insertFilme(filme)
         if (result) {
             message.DEFAULT_MESSAGE.status      = message.SUCESS_CREATED_ITEM.status

@@ -26,11 +26,11 @@ app.post("/v1/senai/locadora/filme", boddyParserJSON, async function(request,res
     let dados = request.body
 
     let result = await controlerFilme.inserirNovoFilme(dados)
-
+    console.log(result)
     response.status(result.status_code)
     response.json(result)
 
-    
+   
     
 })
 
