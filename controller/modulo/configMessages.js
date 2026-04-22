@@ -19,13 +19,32 @@ const DEFAULT_MESSAGE = {
 }
 
 //msgs de erro da api
+const ERROR_INTERNAL_SERVER_MODEL ={
+    status:             false,
+    status_code:        500,
+    message:            "nao foi possivel processar a requisicao por conta de erro na api[erro na modelagem de dados ] "
+}
+
+const ERROR_INTERNAL_SERVER_CONTROLLER ={
+    status:             false,
+    status_code:        500,
+    message:            "nao foi possivel processar a requisicao por conta de erro na api[ERRO NA CONTROLLER ] "
+}
+
 const ERROR_BAD_REQUEST ={
     status:             false,
     status_code:        400,
     message:            "os dados enviado na requisicao nao estao corretos "
 }
 
-// mensagem de erro na api
+const ERROR_CONTENT_TYPE ={
+    status:             false,
+    status_code:        415,
+    message:            "nao foi possivel processar a requisicao pois o tipo de dado aceito pela api é so json"
+}
+
+
+// mensagem  na api
 const SUCESS_CREATED_ITEM = {
     status:             true,
     status_code:        201,
@@ -36,5 +55,8 @@ const SUCESS_CREATED_ITEM = {
 module.exports = {
     DEFAULT_MESSAGE,
     ERROR_BAD_REQUEST,
-    SUCESS_CREATED_ITEM
+    SUCESS_CREATED_ITEM,
+    ERROR_INTERNAL_SERVER_MODEL,
+    ERROR_INTERNAL_SERVER_CONTROLLER,
+    ERROR_CONTENT_TYPE
 }

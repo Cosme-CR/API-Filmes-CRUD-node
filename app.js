@@ -24,9 +24,12 @@ app.post("/v1/senai/locadora/filme", boddyParserJSON, async function(request,res
 
     // recebe o conteudo dentro do body da requisição
     let dados = request.body
+    let conteType = request.headers['content-type']
 
-    let result = await controlerFilme.inserirNovoFilme(dados)
-    console.log(result)
+    console.log(request.headers)
+
+    let result = await controlerFilme.inserirNovoFilme(dados,conteType)
+    
     response.status(result.status_code)
     response.json(result)
 

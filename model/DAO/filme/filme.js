@@ -16,30 +16,36 @@ const knexConex     = knex(knexConfig.development)
 //funcao para inserir dados na tabela de filmes 
 async function insertFilme(filme){
 
-    let sql = `insert into tbl_filme(
-                        nome, 
-                        data_lancamento, 
-                        duracao, 
-                        sinopse, 
-                        avaliacao, 
-                        valor,
-                        capa 
-                    )
-                values(
-                        '${filme.nome}',
-                        '${filme.data_lancamento}',
-                        '${filme.duracao}',
-                        '${filme.sinopse}',
-                        '${filme.avaliacao}',
-                        '${filme.valor}',
-                        '${filme.capa}'
-                        ); `
-    
-    //executa o scriptSQL no banco de dados
-    let result = await knexConex.raw(sql)
-    if(result){
-        return true 
-    }else{return false}
+    try {
+
+        let sql = `insert into tbl_filme(
+                            nome, 
+                            data_lancamento, 
+                            duracao, 
+                            sinopse, 
+                            avaliacao, 
+                            valor,
+                            capa 
+                        )
+                    values(
+                            '${filme.nome}',
+                            '${filme.data_lancamento}',
+                            '${filme.duracao}',
+                            '${filme.sinopse}',
+                            if('${filme.avaliacao}' = "", null,'${filme.avaliacao}'),
+                            '${filme.valor}',
+                            '${filme.capa}'
+                            ); `
+        
+        //executa o scriptSQL no banco de dados
+        let result = await knexConex.raw(sql)
+        if(result){
+            return true 
+        }else{return false}
+    } catch (error) {
+        //console.log(error)//erro 500 descomentar essa linha
+        return false
+    }
 
 }
 
