@@ -17,7 +17,7 @@ const knexConex     = knex(knexConfig.development)
 async function insertFilme(filme){
 
     try {
-
+        //script pra onserir filme no banco de dados
         let sql = `insert into tbl_filme(
                             nome, 
                             data_lancamento, 
@@ -56,8 +56,22 @@ async function updateFilme(filme) {
 
 //funcao para retornar todos os dados da tabela de filme
 async function selectAllFilme() {
+    try {
+        //script select pra ver todos os filmes
+        let sql = `select * from tbl_filme order by id desc`
+
+        let result = await knexConex.raw(sql)
+        console.log(result)
+
+    } catch (error) {
+        
+    }
+
+
+
     
 }
+selectAllFilme()
 
 //função para retornar os dados do filme filtrando pelo id
 async function selectByIdFilme(id) {
