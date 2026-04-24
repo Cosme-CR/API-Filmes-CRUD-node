@@ -35,6 +35,22 @@ app.post("/v1/senai/locadora/filme", boddyParserJSON, async function(request,res
     
 })
 
+app.get("/v1/senai/locadora/filme/:id", async function(request,response){
+
+    // recebe o id
+    let id = request.params.id
+
+
+
+    let result = await controlerFilme.buscarFilme(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
+
+
 app.get("/v1/senai/locadora/filme", async function(request,response){
     let result = await controlerFilme.listarFilmes()
 

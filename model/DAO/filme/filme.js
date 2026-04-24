@@ -81,6 +81,20 @@ async function selectAllFilme() {
 
 //função para retornar os dados do filme filtrando pelo id
 async function selectByIdFilme(id) {
+    try {
+        // faz busca no banco de dados pelo id 
+        let sql = `select * from tbl_filme where id=${id}`
+
+        let result = await knexConex.raw(sql)
+        if (Array.isArray(result)) {
+            return result[0]
+        }else{
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
     
 }
 

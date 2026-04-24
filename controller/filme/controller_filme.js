@@ -74,6 +74,7 @@ async function listarFilmes(params) {
                 //poem o status , o codigo de status e a msg com os filmes
                 message.DEFAULT_MESSAGE.status            = message.SUCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code       = message.SUCESS_RESPONSE.status_code
+                message.DEFAULT_MESSAGE.response.count    = result.length
                 message.DEFAULT_MESSAGE.response.filme    = result
                 
                 // retorna tudo
@@ -93,7 +94,41 @@ async function listarFilmes(params) {
 }
 
 //funcao pra buscar filmes pelo id
-async function buscarFilme(params) {
+async function buscarFilme(id) {
+    // 200 achou
+    // 404 nao achou
+    // 500 erro na model
+    let message = JSON.parse(JSON.stringify(config_message))
+    const filmeDAO = require("../../model/DAO/filme/filme.js")
+
+    try {
+        //validacao pra garntir que o id seja valido
+        if (id == "" || id == null || id == undefined || isNaN(id) ) {
+            message.ERROR_BAD_REQUEST.field = "[ID] invalido"
+            return message.ERROR_BAD_REQUEST // 400
+        }else{
+            let result = await filmeDAO.selectByIdFilme(id)
+
+            if (result) {
+                if (result.length>0) {
+                    message.DEFAULT_MESSAGE.status            = message.SUCESS_RESPONSE.status
+                    message.DEFAULT_MESSAGE.status_code       = message.SUCESS_RESPONSE.status_code
+                    message.DEFAULT_MESSAGE.response.filme    = result
+                    
+                    return message.DEFAULT_MESSAGE               //200 sucesso
+                }else{
+                    return message.ERROR_NOT_FOUND              //404
+                }
+            }else{
+                return message.ERROR_INTERNAL_SERVER_MODEL      //erro 500 model
+            }
+        }
+
+
+        
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER//500
+    }
     
 }
 
@@ -138,5 +173,7 @@ async function validarDados(filme) {
 module.exports = {
     inserirNovoFilme,
     listarFilmes,
+    buscarFilme,
+    atualizarFilme,
 }
 //
