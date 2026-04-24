@@ -37,6 +37,12 @@ const ERROR_BAD_REQUEST ={
     message:            "os dados enviado na requisicao nao estao corretos "
 }
 
+const ERROR_NOT_FOUND ={
+    status:             false,
+    status_code:        404,
+    message:            "nao foi encontrado nenhum dado para retorno"
+}
+
 const ERROR_CONTENT_TYPE ={
     status:             false,
     status_code:        415,
@@ -52,11 +58,18 @@ const SUCESS_CREATED_ITEM = {
 
 }
 
+const SUCESS_RESPONSE = {
+    status:             true,
+    status_code:        200,
+}
+
 module.exports = {
     DEFAULT_MESSAGE,
     ERROR_BAD_REQUEST,
     SUCESS_CREATED_ITEM,
     ERROR_INTERNAL_SERVER_MODEL,
     ERROR_INTERNAL_SERVER_CONTROLLER,
-    ERROR_CONTENT_TYPE
+    ERROR_CONTENT_TYPE, 
+    ERROR_NOT_FOUND,
+    SUCESS_RESPONSE
 }

@@ -62,6 +62,34 @@ async function atualizarFilme(params) {
 //funcao para retornar todos filmes
 async function listarFilmes(params) {
     
+    let message = JSON.parse(JSON.stringify(config_message))
+    const filmeDAO = require("../../model/DAO/filme/filme.js")
+    
+    try {
+        let result = await filmeDAO.selectAllFilme()
+        //valida se  DAO conseguiu processar os dados
+        if (result) {
+            // valida se a array de retorno do DAO tem algo dentro
+            if (result.length>0) {
+                //poem o status , o codigo de status e a msg com os filmes
+                message.DEFAULT_MESSAGE.status            = message.SUCESS_RESPONSE.status
+                message.DEFAULT_MESSAGE.status_code       = message.SUCESS_RESPONSE.status_code
+                message.DEFAULT_MESSAGE.response.filme    = result
+                
+                // retorna tudo
+                return message.DEFAULT_MESSAGE // 200 dados do filme
+            }else{
+                return message.ERROR_NOT_FOUND//404
+            }
+            
+        }else{
+            return message.ERROR_INTERNAL_SERVER_MODEL// 500 model
+        }
+
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER//erro 500 controller
+    }
+    
 }
 
 //funcao pra buscar filmes pelo id
@@ -109,5 +137,6 @@ async function validarDados(filme) {
 
 module.exports = {
     inserirNovoFilme,
+    listarFilmes,
 }
 //

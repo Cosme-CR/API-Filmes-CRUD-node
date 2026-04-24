@@ -60,18 +60,24 @@ async function selectAllFilme() {
         //script select pra ver todos os filmes
         let sql = `select * from tbl_filme order by id desc`
 
+        // executa o script no banco
         let result = await knexConex.raw(sql)
-        console.log(result)
+
+        // verifica se o script retornou um array
+        if (Array.isArray(result)) {
+            return result[0] 
+        }else{
+            return false
+        }
 
     } catch (error) {
+        //console.log(error)
+        return false 
         
     }
 
-
-
-    
 }
-selectAllFilme()
+
 
 //função para retornar os dados do filme filtrando pelo id
 async function selectByIdFilme(id) {

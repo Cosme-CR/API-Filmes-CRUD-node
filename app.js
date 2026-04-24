@@ -26,13 +26,20 @@ app.post("/v1/senai/locadora/filme", boddyParserJSON, async function(request,res
     let dados = request.body
     let conteType = request.headers['content-type']
 
-    console.log(request.headers)
+    //console.log(request.headers)
 
     let result = await controlerFilme.inserirNovoFilme(dados,conteType)
     
     response.status(result.status_code)
     response.json(result)
+    
+})
 
+app.get("/v1/senai/locadora/filme", async function(request,response){
+    let result = await controlerFilme.listarFilmes()
+
+    response.status(result.status_code)
+    response.json(result)
    
     
 })
