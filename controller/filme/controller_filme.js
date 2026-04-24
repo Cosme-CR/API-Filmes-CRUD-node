@@ -124,8 +124,6 @@ async function buscarFilme(id) {
             }
         }
 
-
-        
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER_CONTROLLER//500
     }
