@@ -79,8 +79,7 @@ app.delete("/v1/senai/locadora/filme/:id", async function(request,response){
    
     //recebe o id do registro a ser atualizado
     let id = request.params.id
-    //recebe os dados enviados no corpo da requisisao
-    let dados =request.body
+
     //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
     let result = await controlerFilme.apagarFilme(id)
 
