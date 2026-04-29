@@ -55,12 +55,53 @@ async function inserirNovoFilme(filme,conteType) {
 
 
 //funcao para atalizar filme
-async function atualizarFilme(params) {
+async function atualizarFilme(filme, id, contentType) {
+    let message = JSON.parse(JSON.stringify(config_message))
+    const filmeDAO = require("../../model/DAO/filme/filme.js")
+
+    try {
+        //validacao pra aceitar apenas json
+        if (String(contentType).toLocaleLowerCase() == 'application/json') {
+
+            let restulBuscarId =await buscarFilme(id)
+            //
+            if (restulBuscarId.status) {
+                let validar = await validarDados(filme)
+                if (!validar) {
+                    
+                    //adiciona o atributo id do filme no json para ser nviado no json
+                    filme.id = id
+                    //chama a funcao do dao pra atualizar filme de dentro do banco de dados
+                    let result = await filmeDAO.updateFilme(filme)
+
+                    if (result) {
+                        message.DEFAULT_MESSAGE.status      = message.SUCESS_UPADATE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPADATE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message     = message.SUCESS_UPADATE_ITEM.message  
+                        return message.DEFAULT_MESSAGE//200  
+ 
+                    } else {
+                        return message.ERROR_INTERNAL_SERVER_MODEL//500
+                    }
+                }else{
+                    return validar
+                }
+            }else{
+                return restulBuscarId//400 ou 404 ou 500
+            }
+        }else{
+            return message.ERROR_CONTENT_TYPE//415 tipo errado
+        }
+
+    } catch (error) {
+       // console.log(erro)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER//500
+    }
     
 }
 
 //funcao para retornar todos filmes
-async function listarFilmes(params) {
+async function listarFilmes() {
     
     let message = JSON.parse(JSON.stringify(config_message))
     const filmeDAO = require("../../model/DAO/filme/filme.js")
@@ -130,6 +171,45 @@ async function buscarFilme(id) {
     
 }
 
+
+//funcao pra apagar filme
+async function apagarFilme(id) {
+    let message = JSON.parse(JSON.stringify(config_message))
+    const filmeDAO = require("../../model/DAO/filme/filme.js")
+
+    try {
+        //validacao pra aceitar apenas json
+        //if (String(contentType).toLocaleLowerCase() == 'application/json') {
+
+        let restulBuscarId =await buscarFilme(id)
+            //
+        if (restulBuscarId.status) {
+      
+             //chama a funcao do dao pra deletar filme de dentro do banco de dados
+            let result = await filmeDAO.deleteFilme(id)
+
+            if (result) {
+                        message.DEFAULT_MESSAGE.status      = message.SUCESS_DELETE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code = message.SUCESS_DELETE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message     = message.SUCESS_DELETE_ITEM.message  
+                        return message.DEFAULT_MESSAGE//200  
+ 
+                } else {
+                     return message.ERROR_INTERNAL_SERVER_MODEL//500
+                }
+        }else{
+            return validar
+        }
+    
+
+    } catch (error) {
+       //console.log(error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER//500
+    }
+
+    
+}
+
 //funçao para validar todos dados do filme 
 async function validarDados(filme) {
      //criando clone  do objeto json para manipular a estrutura local sem modificar o original
@@ -173,5 +253,6 @@ module.exports = {
     listarFilmes,
     buscarFilme,
     atualizarFilme,
+    apagarFilme,
 }
 //

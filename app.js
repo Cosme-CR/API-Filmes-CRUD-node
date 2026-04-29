@@ -61,7 +61,32 @@ app.get("/v1/senai/locadora/filme", async function(request,response){
 })
 
 
+app.put("/v1/senai/locadora/filme/:id", boddyParserJSON, async function(request,response){
+    //recebe o content type da requisicao
+    let contentType = request.headers['content-type']
+    //recebe o id do registro a ser atualizado
+    let id = request.params.id
+    //recebe os dados enviados no corpo da requisisao
+    let dados =request.body
+    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
+    let result = await controlerFilme.atualizarFilme(dados,id,contentType)
 
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.delete("/v1/senai/locadora/filme/:id", async function(request,response){
+   
+    //recebe o id do registro a ser atualizado
+    let id = request.params.id
+    //recebe os dados enviados no corpo da requisisao
+    let dados =request.body
+    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
+    let result = await controlerFilme.apagarFilme(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 
 

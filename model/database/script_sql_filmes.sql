@@ -38,5 +38,20 @@ insert into tbl_filme(
                         'https://br.web.img3.acsta.net/img/0a/7d/0a7d99a5da13669f1edde9d6ec00058d.jpg'
                         );
                         
-                        
+				
+                #mostra todos dados da tabela
 select * from tbl_filme;
+
+#atualiza dado
+update tbl_filme set
+		nome = "nova nome", 
+		data_lancamento = "2000-01-01", 
+		duracao = "02:00", 
+		sinopse = "nova sinopse", 
+		avaliacao = "2", 
+		valor = "10",
+		capa = "nova capa"
+	where id = 5;
+
+DELETE FROM tbl_filme 
+	WHERE id = 13;

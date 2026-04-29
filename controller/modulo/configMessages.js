@@ -63,6 +63,19 @@ const SUCESS_RESPONSE = {
     status_code:        200,
 }
 
+const SUCESS_UPADATE_ITEM = {
+    status:             true,
+    status_code:        200,
+    message:            "registro atualizado com suscesso"
+
+}
+const SUCESS_DELETE_ITEM = {
+    status:             true,
+    status_code:        200,
+    message:            "registro apagado com suscesso"
+
+}
+
 module.exports = {
     DEFAULT_MESSAGE,
     ERROR_BAD_REQUEST,
@@ -71,5 +84,7 @@ module.exports = {
     ERROR_INTERNAL_SERVER_CONTROLLER,
     ERROR_CONTENT_TYPE, 
     ERROR_NOT_FOUND,
-    SUCESS_RESPONSE
+    SUCESS_RESPONSE,
+    SUCESS_UPADATE_ITEM,
+    SUCESS_DELETE_ITEM
 }
