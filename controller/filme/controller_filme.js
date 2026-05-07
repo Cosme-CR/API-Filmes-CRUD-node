@@ -21,11 +21,8 @@ async function inserirNovoFilme(filme,conteType) {
 
     try {
 
-
         if (String(conteType).toLocaleLowerCase()== 'application/json') {
             
-        
-
             let validar = await validarDados(filme)
 
             //se validar retornanr algo significa que é json de ero e ja sera retornado 
@@ -35,9 +32,13 @@ async function inserirNovoFilme(filme,conteType) {
                 // manda os filmes para o DAO
                 let result = await filmeDAO.insertFilme(filme)
                 if (result) {
+
+                    filme.id = result// coloca o id ao filme apos ele ser inserido no banco 
                     message.DEFAULT_MESSAGE.status      = message.SUCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCESS_CREATED_ITEM.status_code
-                    message.DEFAULT_MESSAGE.message     = message.SUCESS_CREATED_ITEM.message    
+                    message.DEFAULT_MESSAGE.message     = message.SUCESS_CREATED_ITEM.message
+                    message.DEFAULT_MESSAGE.response    = filme
+                        
                 }else{
                     return message.ERROR_INTERNAL_SERVER_MODEL//erro 500
                     
@@ -78,6 +79,7 @@ async function atualizarFilme(filme, id, contentType) {
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPADATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPADATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCESS_UPADATE_ITEM.message  
+                        message.DEFAULT_MESSAGE.response    = filme
                         return message.DEFAULT_MESSAGE//200  
  
                     } else {
@@ -144,7 +146,7 @@ async function buscarFilme(id) {
 
     try {
         //validacao pra garntir que o id seja valido
-        if (id == "" || id == null || id == undefined || isNaN(id) ) {
+        if (id == undefined || id == "" || id == null ||  isNaN(id) ) {
             message.ERROR_BAD_REQUEST.field = "[ID] invalido"
             return message.ERROR_BAD_REQUEST // 400
         }else{
@@ -178,8 +180,6 @@ async function apagarFilme(id) {
     const filmeDAO = require("../../model/DAO/filme/filme.js")
 
     try {
-        //validacao pra aceitar apenas json
-        //if (String(contentType).toLocaleLowerCase() == 'application/json') {
 
         let restulBuscarId =await buscarFilme(id)
             //
@@ -198,10 +198,9 @@ async function apagarFilme(id) {
                      return message.ERROR_INTERNAL_SERVER_MODEL//500
                 }
         }else{
-            return validar
+            return restulBuscarId// retorna que nao encontrou nda
         }
     
-
     } catch (error) {
        //console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER//500
@@ -217,19 +216,19 @@ async function validarDados(filme) {
 
 
      //VALIDA NOME
-     if(filme.nome == ""                 || filme.nome == null            || filme.nome == undefined            || filme.nome.length >  80){
+     if(filme.nome == undefined            || filme.nome == ""                 || filme.nome == null            ||  filme.nome.length >  80){
         message.ERROR_BAD_REQUEST.field = "[nome] invalido"
         return message.ERROR_BAD_REQUEST
     //VALIDA DATA    
-    }else if(filme.data_lancamento == ""|| filme.data_lancamento == null || filme.data_lancamento == undefined || filme.data_lancamento.length != 10 ){
+    }else if( filme.data_lancamento == undefined || filme.data_lancamento == ""|| filme.data_lancamento == null || filme.data_lancamento.length != 10 ){
         message.ERROR_BAD_REQUEST.field = "[DATA_LANCAMEMTO] invalido"
         return message.ERROR_BAD_REQUEST
     //VALIDA DURACAO
-    }else if (filme.duracao == ""      || filme.duracao == null        || filme.duracao == undefined        || filme.duracao.length  < 5  ){
+    }else if (filme.duracao == undefined        || filme.duracao == ""      || filme.duracao == null        ||  filme.duracao.length  < 5  ){
         message.ERROR_BAD_REQUEST.field = "[DURACAO] invalido"
         return message.ERROR_BAD_REQUEST
     //VALIDA SINOPSE
-    }else if (filme.sinopse == ""       || filme.sinopse == null         || filme.sinopse == undefined ){
+    }else if (filme.sinopse == undefined || filme.sinopse == ""       || filme.sinopse == null          ){
         message.ERROR_BAD_REQUEST.field = "[SINOPSE] invalido"
         return message.ERROR_BAD_REQUEST
     //VALIDA AVALIACAO
@@ -237,7 +236,7 @@ async function validarDados(filme) {
         message.ERROR_BAD_REQUEST.field = "[AVALIACAO] invalido"
         return message.ERROR_BAD_REQUEST
     //VALIDA VALOR
-    }else if (filme.valor == ""         || filme.valor == null          || filme.valor == undefined            || filme.valor.split('.')[0].length > 3 || isNaN( filme.valor) ){
+    }else if (filme.valor == undefined            || filme.valor == ""         || filme.valor == null          ||  filme.valor.split('.')[0].length > 3 || isNaN( filme.valor) ){
         message.ERROR_BAD_REQUEST.field = "[VALOR] invalido"
         return message.ERROR_BAD_REQUEST
     //VALIDA CAPA

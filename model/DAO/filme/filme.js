@@ -39,8 +39,9 @@ async function insertFilme(filme){
         
         //executa o scriptSQL no banco de dados
         let result = await knexConex.raw(sql)
+        //console.log(result[0].insertId)
         if(result){
-            return true 
+            return result[0].insertId// retorna o id 
         }else{return false}
     } catch (error) {
         //console.log(error)//erro 500 descomentar essa linha
@@ -67,6 +68,7 @@ async function updateFilme(filme) {
 
         //executa o script acima de
         let result = await knexConex.raw(sql)
+        
         if (result) {
             return true
         }else{return false}
