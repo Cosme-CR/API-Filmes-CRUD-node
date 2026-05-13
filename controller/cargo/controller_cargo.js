@@ -1,6 +1,6 @@
 /*****************************************************************************************
- * Objetivo:    arquivo responsavel pela validação, tratamento e manipular de dados para o CRUD de filmes
- * Data:        17/04/2025
+ * Objetivo:    arquivo responsavel pela validação, tratamento e manipular de dados para o CRUD de cargo
+ * Data:        13/05/2025
  * Autor:       Cosme
  * Versao:      1.0
  *****************************************************************************************/ 
@@ -8,36 +8,36 @@
 //import do arquivo de padronizacao de mensagens 
 const config_message = require("../modulo/configMessages.js")
 
+//fazer o o crud no banco de dados
+const CargoDAO = require("../../model/DAO/cargo/cargo.js")
 
 
-//Funão para inserir um novo filme
-async function inserirNovoFilme(filme,conteType) {
+
+//Funão para inserir um novo cargo
+async function inserirNovoCargo(cargo,conteType) {
 
     //criando clone  do objeto json para manipular a estrutura local sem modificar o original
     let message = JSON.parse(JSON.stringify(config_message))
-
-    //fazer o o crud no banco de dados
-    const filmeDAO = require("../../model/DAO/filme/filme.js")
 
     try {
 
         if (String(conteType).toLocaleLowerCase()== 'application/json') {
             
-            let validar = await validarDados(filme)
+            let validar = await validarDados(cargo)
 
             //se validar retornanr algo significa que é json de ero e ja sera retornado 
             if(validar){
                 return validar
             }else{
-                // manda os filmes para o DAO
-                let result = await filmeDAO.insertFilme(filme)
+                // manda os cargo para o DAO
+                let result = await CargoDAO.insertCargo(cargo)
                 if (result) {
 
-                    filme.id = result// coloca o id ao filme apos ele ser inserido no banco 
+                    cargo.id = result// coloca o id ao cargo apos ele ser inserido no banco 
                     message.DEFAULT_MESSAGE.status      = message.SUCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message     = message.SUCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response    = filme
+                    message.DEFAULT_MESSAGE.response    = cargo
                         
                 }else{
                     return message.ERROR_INTERNAL_SERVER_MODEL//erro 500
@@ -54,32 +54,33 @@ async function inserirNovoFilme(filme,conteType) {
 }
 
 
-
-//funcao para atalizar filme
-async function atualizarFilme(filme, id, contentType) {
+//FEITO
+//funcao para atalizar cargo
+async function atualizarCargo(cargo, id, contentType) {
     let message = JSON.parse(JSON.stringify(config_message))
-    const filmeDAO = require("../../model/DAO/filme/filme.js")
+   
 
     try {
         //validacao pra aceitar apenas json
         if (String(contentType).toLocaleLowerCase() == 'application/json') {
 
-            let restulBuscarId =await buscarFilme(id)
+            let restulBuscarId =await buscarCargo(id)
             //
             if (restulBuscarId.status) {
-                let validar = await validarDados(filme)
+                let validar = await validarDados(cargo)
                 if (!validar) {
                     
                     //adiciona o atributo id do filme no json para ser nviado no json
-                    filme.id = id
+                    cargo.id = id
                     //chama a funcao do dao pra atualizar filme de dentro do banco de dados
-                    let result = await filmeDAO.updateFilme(filme)
+                    let result = await CargoDAO.updateCargo(cargo)
+
 
                     if (result) {
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPADATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPADATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCESS_UPADATE_ITEM.message  
-                        message.DEFAULT_MESSAGE.response    = filme
+                        message.DEFAULT_MESSAGE.response    = cargo
                         return message.DEFAULT_MESSAGE//200  
  
                     } else {
@@ -102,14 +103,19 @@ async function atualizarFilme(filme, id, contentType) {
     
 }
 
-//funcao para retornar todos filmes
-async function listarFilmes() {
+
+
+
+
+
+//funcao para retornar todos cargos
+async function listarCargos() {
     
     let message = JSON.parse(JSON.stringify(config_message))
-    const filmeDAO = require("../../model/DAO/filme/filme.js")
     
     try {
-        let result = await filmeDAO.selectAllFilme()
+        let result = await CargoDAO.selectAllCargo()
+
         //valida se  DAO conseguiu processar os dados
         if (result) {
             // valida se a array de retorno do DAO tem algo dentro
@@ -118,7 +124,7 @@ async function listarFilmes() {
                 message.DEFAULT_MESSAGE.status            = message.SUCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code       = message.SUCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count    = result.length
-                message.DEFAULT_MESSAGE.response.filme    = result
+                message.DEFAULT_MESSAGE.response.cargo    = result
                 
                 // retorna tudo
                 return message.DEFAULT_MESSAGE // 200 dados do filme
@@ -135,14 +141,13 @@ async function listarFilmes() {
     }
     
 }
-
-//funcao pra buscar filmes pelo id
-async function buscarFilme(id) {
+//FEITO
+//funcao pra buscar cargo pelo id
+async function buscarCargo(id) {
     // 200 achou
     // 404 nao achou
     // 500 erro na model
     let message = JSON.parse(JSON.stringify(config_message))
-    const filmeDAO = require("../../model/DAO/filme/filme.js")
 
     try {
         //validacao pra garntir que o id seja valido
@@ -150,13 +155,13 @@ async function buscarFilme(id) {
             message.ERROR_BAD_REQUEST.field = "[ID] invalido"
             return message.ERROR_BAD_REQUEST // 400
         }else{
-            let result = await filmeDAO.selectByIdFilme(id)
+            let result = await CargoDAO.selectByIdCargo(id)
 
             if (result) {
                 if (result.length>0) {
                     message.DEFAULT_MESSAGE.status            = message.SUCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code       = message.SUCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.filme    = result
+                    message.DEFAULT_MESSAGE.response.cargo    = result
                     
                     return message.DEFAULT_MESSAGE               //200 sucesso
                 }else{
@@ -175,18 +180,18 @@ async function buscarFilme(id) {
 
 
 //funcao pra apagar filme
-async function apagarFilme(id) {
+async function apagarCargo(id) {
     let message = JSON.parse(JSON.stringify(config_message))
-    const filmeDAO = require("../../model/DAO/filme/filme.js")
 
     try {
 
-        let restulBuscarId =await buscarFilme(id)
+        let restulBuscarId =await buscarCargo(id)
             //
         if (restulBuscarId.status) {
       
-             //chama a funcao do dao pra deletar filme de dentro do banco de dados
-            let result = await filmeDAO.deleteFilme(id)
+             //chama a funcao do dao pra deletar cargo de dentro do banco de dados
+            let result = await CargoDAO.deleteCargo(id)
+
 
             if (result) {
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_DELETE_ITEM.status
@@ -209,48 +214,30 @@ async function apagarFilme(id) {
     
 }
 
-//funçao para validar todos dados do filme 
-async function validarDados(filme) {
+//funçao para validar todos dados do dados 
+async function validarDados(cargo) {
      //criando clone  do objeto json para manipular a estrutura local sem modificar o original
      let message = JSON.parse(JSON.stringify(config_message))
 
 
-     //VALIDA NOME
-     if(filme.nome == undefined            || filme.nome == ""                 || filme.nome == null            ||  filme.nome.length >  80){
-        message.ERROR_BAD_REQUEST.field = "[nome] invalido"
+     //VALIDA cargo
+     if(cargo.cargo == undefined    || cargo.cargo == ""      || cargo.cargo == null     ||  cargo.cargo.length >  45){
+        message.ERROR_BAD_REQUEST.field = "[cargo] invalido"
         return message.ERROR_BAD_REQUEST
-    //VALIDA DATA    
-    }else if( filme.data_lancamento == undefined || filme.data_lancamento == ""|| filme.data_lancamento == null || filme.data_lancamento.length != 10 ){
-        message.ERROR_BAD_REQUEST.field = "[DATA_LANCAMEMTO] invalido"
-        return message.ERROR_BAD_REQUEST
-    //VALIDA DURACAO
-    }else if (filme.duracao == undefined        || filme.duracao == ""      || filme.duracao == null        ||  filme.duracao.length  < 5  ){
-        message.ERROR_BAD_REQUEST.field = "[DURACAO] invalido"
-        return message.ERROR_BAD_REQUEST
-    //VALIDA SINOPSE
-    }else if (filme.sinopse == undefined || filme.sinopse == ""       || filme.sinopse == null          ){
-        message.ERROR_BAD_REQUEST.field = "[SINOPSE] invalido"
-        return message.ERROR_BAD_REQUEST
-    //VALIDA AVALIACAO
-    }else if(isNaN(filme.avaliacao)     || filme.avaliacao.length > 3 ){
-        message.ERROR_BAD_REQUEST.field = "[AVALIACAO] invalido"
-        return message.ERROR_BAD_REQUEST
-    //VALIDA VALOR
-    }else if (filme.valor == undefined            || filme.valor == ""         || filme.valor == null          ||  filme.valor.split('.')[0].length > 3 || isNaN( filme.valor) ){
-        message.ERROR_BAD_REQUEST.field = "[VALOR] invalido"
-        return message.ERROR_BAD_REQUEST
-    //VALIDA CAPA
-    }else if(filme.capa.length > 255){
-        message.ERROR_BAD_REQUEST.field = "VALOR invalido"
-        return message.ERROR_BAD_REQUEST
+   
     }else{return false }
     
 }
 
 module.exports = {
-    inserirNovoFilme,
-    listarFilmes,
-    buscarFilme,
-    atualizarFilme,
-    apagarFilme,
+    inserirNovoCargo,
+    listarCargos,
+    buscarCargo,
+
+
+
+    atualizarCargo,
+
+
+    apagarCargo,
 }

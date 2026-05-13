@@ -16,6 +16,44 @@ create table tbl_filme(
 
 );
 
+#///////////////////////////////////////////
+create table tbl_cargo(
+	id		 			int not null primary key auto_increment,
+    cargo	 			varchar(45) not null
+);
+
+#################################################
+create table tbl_nascionalidade(
+	id		 			int not null primary key auto_increment,
+    nascionalidade	 	varchar(40) not null
+    
+);
+
+
+#####################################################
+create table tbl_genero(
+	id		 			int not null primary key auto_increment,
+    genero	 			varchar(40) not null
+);
+
+
+#################################################
+create table tbl_clasificacao(
+	id		 			int not null primary key auto_increment,
+    clasificacao	 	varchar(80) not null,
+	caracteristica	 	varchar(80) not null
+);
+
+##############################################################
+create table tbl_pessoa(
+	id		 			int not null primary key auto_increment,
+    nome	 			varchar(80) not null,
+	data_nascimento	 	date not null,
+    biografia			text,
+    foto 				varchar(255)
+    
+);
+
 show tables;
 
 #inserir dados
