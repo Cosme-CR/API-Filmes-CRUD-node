@@ -56,8 +56,8 @@ async function inserirNovoGenero(genero,conteType) {
 
 
 //FEITO
-//funcao para atalizar cargo
-async function atualizarCargo(cargo, id, contentType) {
+//funcao para atalizar genero
+async function atualizarGenero(genero, id, contentType) {
     let message = JSON.parse(JSON.stringify(config_message))
    
 
@@ -65,23 +65,23 @@ async function atualizarCargo(cargo, id, contentType) {
         //validacao pra aceitar apenas json
         if (String(contentType).toLocaleLowerCase() == 'application/json') {
 
-            let restulBuscarId =await buscarCargo(id)
+            let restulBuscarId =await buscarGenero(id)
             //
             if (restulBuscarId.status) {
-                let validar = await validarDados(cargo)
+                let validar = await validarDados(genero)
                 if (!validar) {
                     
                     //adiciona o atributo id do filme no json para ser nviado no json
-                    cargo.id = id
+                    genero.id = id
                     //chama a funcao do dao pra atualizar filme de dentro do banco de dados
-                    let result = await CargoDAO.updateCargo(cargo)
+                    let result = await GeneroDAO.updateGenero(genero)
 
 
                     if (result) {
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPADATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPADATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCESS_UPADATE_ITEM.message  
-                        message.DEFAULT_MESSAGE.response    = cargo
+                        message.DEFAULT_MESSAGE.response    = genero
                         return message.DEFAULT_MESSAGE//200  
  
                     } else {
@@ -110,12 +110,12 @@ async function atualizarCargo(cargo, id, contentType) {
 
 
 //funcao para retornar todos cargos
-async function listarCargos() {
+async function listarGenero() {
     
     let message = JSON.parse(JSON.stringify(config_message))
     
     try {
-        let result = await CargoDAO.selectAllCargo()
+        let result = await GeneroDAO.selectAllGenero()
 
         //valida se  DAO conseguiu processar os dados
         if (result) {
@@ -125,7 +125,7 @@ async function listarCargos() {
                 message.DEFAULT_MESSAGE.status            = message.SUCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code       = message.SUCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count    = result.length
-                message.DEFAULT_MESSAGE.response.cargo    = result
+                message.DEFAULT_MESSAGE.response.genero    = result
                 
                 // retorna tudo
                 return message.DEFAULT_MESSAGE // 200 dados do filme
@@ -144,7 +144,7 @@ async function listarCargos() {
 }
 //FEITO
 //funcao pra buscar cargo pelo id
-async function buscarCargo(id) {
+async function buscarGenero(id) {
     // 200 achou
     // 404 nao achou
     // 500 erro na model
@@ -156,7 +156,8 @@ async function buscarCargo(id) {
             message.ERROR_BAD_REQUEST.field = "[ID] invalido"
             return message.ERROR_BAD_REQUEST // 400
         }else{
-            let result = await CargoDAO.selectByIdCargo(id)
+           // let result = await CargoDAO.selectByIdCargo(id)
+            let result = await GeneroDAO.selectByIdGenero(id)
 
             if (result) {
                 if (result.length>0) {
@@ -181,17 +182,18 @@ async function buscarCargo(id) {
 
 
 //funcao pra apagar filme
-async function apagarCargo(id) {
+async function apagarGenero(id) {
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
 
-        let restulBuscarId =await buscarCargo(id)
+        let restulBuscarId =await buscarGenero(id)
             //
         if (restulBuscarId.status) {
       
              //chama a funcao do dao pra deletar cargo de dentro do banco de dados
-            let result = await CargoDAO.deleteCargo(id)
+            let result = await GeneroDAO.deleteGenero(id)
+
 
 
             if (result) {
@@ -232,13 +234,8 @@ async function validarDados(genero) {
 
 module.exports = {
     inserirNovoGenero,
-    listarCargos,
-    buscarCargo,
-
-
-
-    atualizarCargo,
-
-
-    apagarCargo,
+    listarGenero,
+    buscarGenero,
+    atualizarGenero,
+    apagarGenero,
 }

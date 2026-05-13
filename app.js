@@ -196,5 +196,81 @@ app.post("/v1/senai/locadora/genero", boddyParserJSON, async function(request,re
 })
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//atualizar genero
+app.put("/v1/senai/locadora/genero/:id", boddyParserJSON, async function(request,response){
+    //recebe o content type da requisicao
+    let contentType = request.headers['content-type']
+    //recebe o id do registro a ser atualizado
+    let id = request.params.id
+    //recebe os dados enviados no corpo da requisisao
+    let dados =request.body
+    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
+    let result = await controlerCargo.atualizarCargo(dados,id,contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
+
+//buscar cargo
+app.get("/v1/senai/locadora/cargo/:id", async function(request,response){
+
+    // recebe o id
+    let id = request.params.id
+
+    let result = await controlerCargo.buscarCargo(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
+//listra cargo
+app.get("/v1/senai/locadora/cargo", async function(request,response){
+    let result = await controlerCargo.listarCargos()
+
+
+    response.status(result.status_code)
+    response.json(result)
+   
+    
+})
+
+
+
+//deletar cargo
+app.delete("/v1/senai/locadora/cargo/:id", async function(request,response){
+   
+    //recebe o id do registro a ser atualizado
+    let id = request.params.id
+
+    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
+    let result = await controlerCargo.apagarCargo(id)
+
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
 //serve pra iniciar a api
 app.listen(8080,function(){console.log("api funcionando em http://localhost:8080")})
