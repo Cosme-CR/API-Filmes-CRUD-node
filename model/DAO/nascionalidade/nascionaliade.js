@@ -22,7 +22,7 @@ async function insertNascionalidade(nascionalidade){
                             nascionalidade
                         )
                     values(
-                            '${nascionalidade.nascionalidade}'; `
+                            '${nascionalidade.nascionalidade}'); `
         
         //executa o scriptSQL no banco de dados
         let result = await knexConex.raw(sql)

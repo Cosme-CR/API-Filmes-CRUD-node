@@ -28,7 +28,7 @@ async function insertPessoa(pessoa){
                             '${pessoa.nome}',
                             '${pessoa.data_nascimento}',
                             '${pessoa.biografia}',
-                            '${pessoa.foto}' `
+                            '${pessoa.foto}'); `
         
         //executa o scriptSQL no banco de dados
         let result = await knexConex.raw(sql)
@@ -132,10 +132,10 @@ async function deletePessoa(id) {
 } 
 
 module.exports = {
-    insertpessoa,
-    updatepessoa,
-    selectAllpessoa,
-    selectByIdpessoa,
-    deletepessoa
+    insertPessoa,
+    updatePessoa,
+    selectAllPessoa,
+    selectByIdPessoa,
+    deletePessoa
 
 }

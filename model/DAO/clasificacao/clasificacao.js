@@ -24,7 +24,7 @@ async function insertClasificacao(clasificacao){
                         )
                     values(
                             '${clasificacao.clasificacao}',
-                            '${clasificacao.caracteristica}' `
+                            '${clasificacao.caracteristica}'); `
         
         //executa o scriptSQL no banco de dados
         let result = await knexConex.raw(sql)
