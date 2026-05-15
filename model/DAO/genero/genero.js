@@ -44,7 +44,7 @@ async function updateGenero(genero) {
     try {
         //script para atualizar dados no BD
         let sql =`update tbl_genero set
-            nome = '${genero.genero}'`
+            genero = '${genero.genero}'`
 
         //executa o script acima de
         let result = await knexConex.raw(sql)

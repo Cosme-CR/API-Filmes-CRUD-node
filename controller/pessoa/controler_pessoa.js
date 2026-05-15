@@ -186,7 +186,7 @@ async function apagarPessoa(id) {
         if (restulBuscarId.status) {
       
              //chama a funcao do dao pra deletar pessoa de dentro do banco de dPessoa            let result = await pessoaDAO.deletePessoa(id)
-
+            let result =await pessoaDAO.deletePessoa(id)
 
             if (result) {
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_DELETE_ITEM.status
@@ -229,7 +229,7 @@ async function validarDados(pessoa) {
         return message.ERROR_BAD_REQUESTT
     //VALIDA foto
     }else if(pessoa.foto.length > 255){
-        message.ERROR_BAD_REQUEST.field = "pessoa invalido"
+        message.ERROR_BAD_REQUEST.field = "foto invalido"
         return message.ERROR_BAD_REQUEST
     }else{return false }
     

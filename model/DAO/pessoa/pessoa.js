@@ -51,9 +51,10 @@ async function updatePessoa(pessoa) {
         //script para atualizar dados no BD
         let sql =`update tbl_pessoa set
             nome =              '${pessoa.nome}', 
-            data_lancamento =   '${pessoa.data_nascimento}',
-            duracao =           '${pessoa.biografia}',
-            sinopse =           '${pessoa.foto}'`
+            data_nascimento =   '${pessoa.data_nascimento}',
+            biografia =         '${pessoa.biografia}',
+            foto =              '${pessoa.foto}'
+            where id =           ${pessoa.id}`
 
         //executa o script acima de
         let result = await knexConex.raw(sql)

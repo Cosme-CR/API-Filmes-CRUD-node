@@ -43,7 +43,7 @@ async function updateNascionalidade(nascionalidade) {
     try {
         //script para atualizar dados no BD
         let sql =`update tbl_Nascionalidade set
-            cargo = '${nascionalidade.nascionalidade}'`
+            nascionalidade = '${nascionalidade.nascionalidade}'`
 
         //executa o script acima de
         let result = await knexConex.raw(sql)
@@ -88,7 +88,7 @@ async function selectAllNascionalidade() {
 async function selectByIdNascionalidade(id) {
     try {
         // faz busca no banco de dados pelo id 
-        let sql = `select * from tbl_nascionalidadeo where id=${id}`
+        let sql = `select * from tbl_nascionalidade where id=${id}`
 
         let result = await knexConex.raw(sql)
         if (Array.isArray(result)) {

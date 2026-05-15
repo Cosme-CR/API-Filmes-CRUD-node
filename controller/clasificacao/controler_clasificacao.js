@@ -16,7 +16,6 @@ async function inserirNovoClasificacao(clasificacao,conteType) {
     //criando clone  do objeto json para manipular a estrutura local sem modificar o original
     let message = JSON.parse(JSON.stringify(config_message))
 
-
     try {
 
         if (String(conteType).toLocaleLowerCase()== 'application/json') {
@@ -206,17 +205,17 @@ async function apagarClasificacao(id) {
 }
 
 //funçao para validar todos dados da classificacao 
-async function validarDados(classificacao) {
+async function validarDados(clasificacao) {
      //criando clone  do objeto json para manipular a estrutura local sem modificar o original
      let message = JSON.parse(JSON.stringify(config_message))
 
 
      //VALIDA classificacao
-     if(classificacao.classificacao == undefined || classificacao.classificacao == ""|| classificacao.classificacao == null            ||  classificacao.classificacao.length >  80){
+     if(clasificacao.clasificacao == undefined || clasificacao.clasificacao == ""|| clasificacao.clasificacao == null            ||  clasificacao.clasificacao.length >  80){
         message.ERROR_BAD_REQUEST.field = "[classificacao] invalido"
         return message.ERROR_BAD_REQUEST
     //VALIDA DATA    
-    }else if( classificacao.caracteristica == undefined || classificacao.caracteristica == ""|| classificacao.caracteristica == null || classificacao.caracteristica.length >80 ){
+    }else if( clasificacao.caracteristica == undefined || clasificacao.caracteristica == ""|| clasificacao.caracteristica == null || clasificacao.caracteristica.length >80 ){
         message.ERROR_BAD_REQUEST.field = "[caracteristica] invalido"
         return message.ERROR_BAD_REQUEST 
     }else{return false }
