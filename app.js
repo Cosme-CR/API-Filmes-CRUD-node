@@ -6,6 +6,7 @@ const boddyParser   = require("body-parser")
 const controlerFilme = require("./controller/filme/controller_filme.js")
 const controlerCargo = require("./controller/cargo/controller_cargo.js")
 const controlerGenero = require("./controller/genero/controler_genero.js")
+const controlerPais = require("./controller/pais/controller_pais.js")
 
 const controlerClasificacao = require("./controller/clasificacao/controler_clasificacao.js")
 const controlerNascionalidade = require("./controller/nascionalidade/controler_nascionalidade.js")
@@ -494,6 +495,81 @@ app.delete("/v1/senai/locadora/pessoa/:id", async function(request,response){
 
 //////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////
+//PAIS
+///////////////////////////////////////////////////////////////////////////
+//inserir pais
+app.post("/v1/senai/locadora/pais", boddyParserJSON, async function(request,response){
 
+    // recebe o conteudo dentro do body da requisição
+    let dados = request.body
+    let conteType = request.headers['content-type']
+
+    //console.log(request.headers)
+                       
+    let result = await controlerPais.inserirNovoPais(dados,conteType)
+    
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
+
+//atualizar pais
+app.put("/v1/senai/locadora/pais/:id", boddyParserJSON, async function(request,response){
+    //recebe o content type da requisicao
+    let contentType = request.headers['content-type']
+    //recebe o id do registro a ser atualizado
+    let id = request.params.id
+    //recebe os dados enviados no corpo da requisisao
+    let dados =request.body
+    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
+    let result = await controlerPais.atualizarPais(dados,id,contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
+
+//buscar pais
+app.get("/v1/senai/locadora/pais/:id", async function(request,response){
+
+    // recebe o id
+    let id = request.params.id
+
+    let result = await controlerPais.buscarPais(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+    
+})
+
+//listra pais
+app.get("/v1/senai/locadora/pais", async function(request,response){
+    let result = await controlerPais.listarPais()
+
+
+    response.status(result.status_code)
+    response.json(result)
+   
+    
+})
+
+
+
+//deletar pais
+app.delete("/v1/senai/locadora/pais/:id", async function(request,response){
+   
+    //recebe o id do registro a ser atualizado
+    let id = request.params.id
+
+    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
+    let result = await controlerPais.apagarPais(id)
+
+
+    response.status(result.status_code)
+    response.json(result)
+})
 //serve pra iniciar a api
 app.listen(8080,function(){console.log("api funcionando em http://localhost:8080")})
