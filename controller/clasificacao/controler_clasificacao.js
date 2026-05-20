@@ -210,11 +210,14 @@ async function validarDados(clasificacao) {
      let message = JSON.parse(JSON.stringify(config_message))
 
 
-     //VALIDA classificacao
-     if(clasificacao.clasificacao == undefined || clasificacao.clasificacao == ""|| clasificacao.clasificacao == null            ||  clasificacao.clasificacao.length >  80){
+     if(clasificacao.sigla == undefined || clasificacao.sigla == ""|| clasificacao.sigla == null            ||  clasificacao.sigla.length >  10){
+        message.ERROR_BAD_REQUEST.field = "[sigla] invalido"
+        return message.ERROR_BAD_REQUEST
+    //VALIDA classificacao   
+    }else if(clasificacao.clasificacao == undefined || clasificacao.clasificacao == ""|| clasificacao.clasificacao == null            ||  clasificacao.clasificacao.length >  80){
         message.ERROR_BAD_REQUEST.field = "[classificacao] invalido"
         return message.ERROR_BAD_REQUEST
-    //VALIDA DATA    
+    //VALIDA caracteristica   
     }else if( clasificacao.caracteristica == undefined || clasificacao.caracteristica == ""|| clasificacao.caracteristica == null || clasificacao.caracteristica.length >80 ){
         message.ERROR_BAD_REQUEST.field = "[caracteristica] invalido"
         return message.ERROR_BAD_REQUEST 

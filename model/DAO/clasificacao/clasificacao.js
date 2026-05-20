@@ -18,11 +18,13 @@ async function insertClasificacao(clasificacao){
 
     try {
         //script pra onserir filme no banco de dados
-        let sql = `insert into tbl_clasificacao(
+        let sql = `insert into tbl_classificacao(
+                            sigla,
                             clasificacao, 
                             caracteristica
                         )
                     values(
+                            '${clasificacao.sigla}',
                             '${clasificacao.clasificacao}',
                             '${clasificacao.caracteristica}'); `
         
@@ -45,9 +47,10 @@ async function updateClasificacao(clasificacao) {
 
     try {
         //script para atualizar dados no BD
-        let sql =`update tbl_clasificacao set
-            clasificacao = '${clasificacao.clasificacao}', 
-            caracteristica =  '${clasificacao.caracteristica}'`
+        let sql =`update tbl_classificacao set
+            sigla            = '${clasificacao.sigla}',
+            clasificacao    = '${clasificacao.clasificacao}', 
+            caracteristica   =  '${clasificacao.caracteristica}'`
 
         //executa o script acima de
         let result = await knexConex.raw(sql)
@@ -68,7 +71,7 @@ async function updateClasificacao(clasificacao) {
 async function selectAllClasificacao() {
     try {
         //script select pra ver todos os filmes
-        let sql = `select * from tbl_clasificacao order by id desc`
+        let sql = `select * from tbl_classificacao order by id desc`
 
         // executa o script no banco
         let result = await knexConex.raw(sql)
@@ -93,7 +96,7 @@ async function selectAllClasificacao() {
 async function selectByIdClasificacao(id) {
     try {
         // faz busca no banco de dados pelo id 
-        let sql = `select * from tbl_clasificacao where id=${id}`
+        let sql = `select * from tbl_classificacao where id=${id}`
 
         let result = await knexConex.raw(sql)
         if (Array.isArray(result)) {
@@ -111,7 +114,7 @@ async function selectByIdClasificacao(id) {
 //funcao pra excluir um filme pelo id
 async function deleteClasificacao(id) {
     try {
-        let sql = `DELETE FROM tbl_clasificacao 
+        let sql = `DELETE FROM tbl_classificacao 
                         WHERE id = ${id};`
 
         let result = await knexConex.raw(sql)
