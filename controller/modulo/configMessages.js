@@ -75,6 +75,13 @@ const SUCESS_DELETE_ITEM = {
     message:            "registro apagado com suscesso"
 
 }
+// Mensagens de Sucesso da API
+const SUCESS_CREATED_ITEM_WARNIG =    {
+    status : true, 
+    status_code: 201, 
+    message: 'Os dados principais foram inseridos com sucesso, porém alguns dados apresentaram problemas'
+}
+
 
 module.exports = {
     DEFAULT_MESSAGE,
@@ -86,5 +93,6 @@ module.exports = {
     ERROR_NOT_FOUND,
     SUCESS_RESPONSE,
     SUCESS_UPADATE_ITEM,
-    SUCESS_DELETE_ITEM
+    SUCESS_DELETE_ITEM,
+    SUCESS_CREATED_ITEM_WARNIG
 }

@@ -8,6 +8,10 @@
 //import do arquivo de padronizacao de mensagens 
 const config_message = require("../modulo/configMessages.js")
 
+//Import de arquivos de Controller
+const controller_classificacao = require('../clasificacao/controler_clasificacao.js')
+const controller_filme_genero  = require('./controller_filme_genero.js')
+
 
 
 //Funão para inserir um novo filme
@@ -76,6 +80,28 @@ async function atualizarFilme(filme, id, contentType) {
                     let result = await filmeDAO.updateFilme(filme)
 
                     if (result) {
+                        //munipulacao de dados na tabela de relacao entre filme e genero
+                        let resultDeletGenero = await controller_filme_genero.excluireGeneroIdFilme(filme.id)
+                        //apos a exclusao dos generos relacionados ao filme 
+                        if (resultDeletGenero.status) {
+         
+                            //Manipulação de dados para inserir os Generos do Filme
+                            for(genero of filme.genero){
+                                //Cria o objeto JSON com os ids do filme e do genero
+                                let filmeGenero = { "id_filme": filme.id, 
+                                                    "id_genero": genero.id
+                                                }
+                                //Chama a controller do filme genero para inserir os IDs                
+                                let resultInsertGenero = await controller_filme_genero.inserirNovoFilmeGenero(filmeGenero)
+                                console.log(resultInsertGenero)
+
+                                if(!resultInsertGenero.status){
+                                    return message.SUCCESS_CREATED_ITEM_WARNIG //201 com alerta de dados não inseridos
+                                }
+                                
+                            }
+
+                        }
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPADATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPADATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCESS_UPADATE_ITEM.message  
@@ -101,8 +127,122 @@ async function atualizarFilme(filme, id, contentType) {
     }
     
 }
-
+//##########################################################################
 //funcao para retornar todos filmes
+
+const listarFilmes = async function(){
+    
+    //Criando um clone do objeto JSON para manipular a sua estrutura local sem
+    //modificar a estrutura original
+    const filmeDAO = require("../../model/DAO/filme/filme.js")
+    let message = JSON.parse(JSON.stringify(config_message))
+
+    try {
+        //Chama a função do DAO para retornar a lista de todos os filmes
+        let result = await filmeDAO.selectAllFilme()
+
+        //Validação para verificar se o DAO conseguiu processar os dados
+        if(result){
+            //Validação para verificar se existe conteúdo no array
+            if(result.length > 0){
+
+                //Percorre o ARRAY de filmes para identificar os dados da classificação
+                for(filme of result){
+                    //Busca na controller da classificação o ID referente aos dados
+                    //let resultClassificacao = await controller_classificacao.buscarClassificacao(filme.id_classificacao)
+                    //Se a classificação foi encontrada
+                    //if(resultClassificacao.status){
+                        //Cria o atributo classificacao no filme e adiciona os dados referente
+                        // a classificacao
+                       // filme.classificacao = resultClassificacao.response.classificacao
+                        //Apaga o atributo id_classificacao do filme para não ficar repetido
+                        //delete filme.id_classificacao
+                   // }
+
+                    //Cria o objeto de Generos relacionado ao Filme
+                    let resultGenero = await controller_filme_genero.buscarGeneroIdFilme(filme.id)
+                    if(resultGenero.status){
+                        filme.genero = resultGenero.response.filme_genero
+                    }
+                }
+
+                message.DEFAULT_MESSAGE.status = message.SUCESS_RESPONSE.status
+                message.DEFAULT_MESSAGE.status_code = message.SUCESS_RESPONSE.status_code
+                message.DEFAULT_MESSAGE.response.count = result.length
+                message.DEFAULT_MESSAGE.response.filme = result
+
+                return message.DEFAULT_MESSAGE //200 (Dados do Filme)
+            }else{
+               
+                return message.ERROR_NOT_FOUND //404
+            }
+        }else{
+           
+            return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
+        }
+    } catch (error) {
+        console.log("caiu 3",error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (controller)
+    }
+}
+
+//Função para buscar um filme pelo ID
+const buscarFilme = async function(id){
+    
+    //Criando um clone do objeto JSON para manipular a sua estrutura local sem
+    //modificar a estrutura original
+    let message = JSON.parse(JSON.stringify(config_message))
+    const filmeDAO = require("../../model/DAO/filme/filme.js")
+    
+    try {
+        //Validaçção para garantir que o ID seja válido
+        if(id == undefined || id == '' || id == null ||  isNaN(id)){
+            message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
+            return message.ERROR_BAD_REQUEST //400
+        }else{
+            let result = await filmeDAO.selectByIdFilme(id)
+
+            if(result){
+                if(result.length > 0){
+
+                        //Percorre o ARRAY de filmes para identificar os dados da classificação
+                        for(filme of result){
+                            //Busca na controller da classificação o ID referente aos dados
+                            let resultClassificacao = await controller_classificacao.buscarClassificacao(filme.id_classificacao)
+                            //Se a classificação foi encontrada
+                            if(resultClassificacao.status){
+                                //Cria o atributo classificacao no filme e adiciona os dados referente
+                                // a classificacao
+                                filme.classificacao = resultClassificacao.response.classificacao
+                                //Apaga o atributo id_classificacao do filme para não ficar repetido
+                                delete filme.id_classificacao
+                            }
+
+                            //Cria o objeto de Generos relacionado ao Filme
+                            let resultGenero = await controller_filme_genero.buscarGeneroIdFilme(filme.id)
+                            if(resultGenero.status){
+                                filme.genero = resultGenero.response.filme_genero
+                            }
+                        }
+
+                    message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
+                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
+                    message.DEFAULT_MESSAGE.response.filme = result
+
+                    return message.DEFAULT_MESSAGE //200
+                }else{
+                    return message.ERROR_NOT_FOUND //404
+                }
+            }else{
+                return message.ERROR_INTERNAL_SERVER_MODEL //500 (Model)
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
+/*
 async function listarFilmes() {
     
     let message = JSON.parse(JSON.stringify(config_message))
@@ -172,7 +312,7 @@ async function buscarFilme(id) {
     }
     
 }
-
+*/
 
 //funcao pra apagar filme
 async function apagarFilme(id) {
