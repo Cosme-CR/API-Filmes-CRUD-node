@@ -13,35 +13,23 @@ const config_message = require("../modulo/configMessages.js")
 const filmeGeneroDAO = require('../../model/DAO/filme/filme_genero.js')
 
 // Função para inserir um novo gênero
+
 const inserirNovoFilmeGenero = async function(filmeGenero){
-   
     let message = JSON.parse(JSON.stringify(config_message))
-    
     try {
-            // Validação de dados para os atributos do gênero (Status 400)
-            let validar = await validarDados(filmeGenero)
-
-            if(validar){
-                return validar // 400
-            } else {
-                // Encaminha os dados do gênero para o DAO
-                let result = await filmeGeneroDAO.insertFilmeGenero(filmeGenero)
-
-                if(result){ // 201
-                    filmeGenero.id = result
-
-                    message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
-                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
-                    message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response = filmeGenero
-
-                    return message.DEFAULT_MESSAGE
-                } else { 
-                    return message.ERROR_INTERNAL_SERVER_MODEL // 500
-                } 
-            }
+        let validar = await validarDados(filmeGenero)
+        if(validar) return validar 
+        let result = await filmeGeneroDAO.insertFilmeGenero(filmeGenero)
+        if(result){
+            filmeGenero.id = result
+            message.DEFAULT_MESSAGE.status = message.SUCESS_CREATED_ITEM.status
+            message.DEFAULT_MESSAGE.status_code = message.SUCESS_CREATED_ITEM.status_code
+            message.DEFAULT_MESSAGE.message = message.SUCESS_CREATED_ITEM.message
+            message.DEFAULT_MESSAGE.response = filmeGenero
+            return message.DEFAULT_MESSAGE
+        } else return message.ERROR_INTERNAL_SERVER_MODEL
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
@@ -178,33 +166,18 @@ const buscarFilmeIdGenero = async function(idGenero){
 }
 
 const buscarGeneroIdFilme = async function(idFilme){
-    
     let message = JSON.parse(JSON.stringify(config_message))
-    
     try {
-        if(idFilme == undefined || idFilme == '' || idFilme == null || isNaN(idFilme)){
-            message.ERROR_BAD_REQUEST.field = '[ID_GENERO] INVÁLIDO'
-            return message.ERROR_BAD_REQUEST // 400
-        } else {
-            let result = await filmeGeneroDAO.selectGenerosByIdFilme(idFilme)
-
-            if(result){
-                if(result.length > 0){
-
-                    message.DEFAULT_MESSAGE.status = message.SUCESS_RESPONSE.status
-                    message.DEFAULT_MESSAGE.status_code = message.SUCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.filme_genero = result[0] // Retorna o objeto direto se preferir
-
-                    return message.DEFAULT_MESSAGE // 200
-                } else {
-                    return message.ERROR_NOT_FOUND // 404
-                }
-            } else {
-                return message.ERROR_INTERNAL_SERVER_MODEL // 500
-            }
-        }
+        if(!idFilme || isNaN(idFilme)) return message.ERROR_BAD_REQUEST
+        let result = await filmeGeneroDAO.selectGenerosByIdFilme(idFilme)
+        if(result && result.length > 0){
+            message.DEFAULT_MESSAGE.status = message.SUCESS_RESPONSE.status
+            message.DEFAULT_MESSAGE.status_code = message.SUCESS_RESPONSE.status_code
+            message.DEFAULT_MESSAGE.response.filme_genero = result
+            return message.DEFAULT_MESSAGE
+        } else return message.ERROR_NOT_FOUND
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
@@ -234,39 +207,23 @@ const excluirFilmeGenero = async function(id){
 
 
 // Função para excluir os generos relacionados ao filme
-const excluireGeneroIdFilme = async function(idfilme){
-
+const excluireGeneroIdFilme = async function(idFilme){
     let message = JSON.parse(JSON.stringify(config_message))
-    
     try {
-
-        let result = await filmeGeneroDAO.deleteFilmeGenero(id)
-
-        if(result){
-                return message.SUCCESS_DELETED_ITEM // 200
-        } else {
-                return message.ERROR_INTERNAL_SERVER_MODEL // 500
-        }
+        let result = await filmeGeneroDAO.deleteGeneroByFilme(idFilme)
+        if(result) return message.SUCESS_DELETE_ITEM
+        else return message.ERROR_INTERNAL_SERVER_MODEL
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
 const validarDados = async function(filmeGenero){
-
     let message = JSON.parse(JSON.stringify(config_message))
-
-    // nome: Obrigatório, máximo 100 caracteres (conforme VARCHAR(100))
-    if(filmeGenero.id_filme == undefined || filmeGenero.id_filme == '' || filmeGenero.id_filme == null || isNaN(filmeGenero.id_filme)){
-        message.ERROR_BAD_REQUEST.field = '[ID_FILME] INVÁLIDO'
+    if(!filmeGenero.id_filme || isNaN(filmeGenero.id_filme) || !filmeGenero.id_genero || isNaN(filmeGenero.id_genero)){
+        message.ERROR_BAD_REQUEST.field = 'Campos obrigatórios inválidos'
         return message.ERROR_BAD_REQUEST 
-    } 
-    else if(filmeGenero.id_genero == undefined || filmeGenero.id_genero == '' || filmeGenero.id_genero == null || isNaN(filmeGenero.id_genero)){
-        message.ERROR_BAD_REQUEST.field = '[ID_GENERO] INVÁLIDO'
-        return message.ERROR_BAD_REQUEST 
-    }else {
-        return false // Dados válidos
-    }
+    } else return false
 }
 
 module.exports = {

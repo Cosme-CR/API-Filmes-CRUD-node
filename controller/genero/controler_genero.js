@@ -163,7 +163,7 @@ async function buscarGenero(id) {
                 if (result.length>0) {
                     message.DEFAULT_MESSAGE.status            = message.SUCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code       = message.SUCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.cargo    = result
+                    message.DEFAULT_MESSAGE.response.genero    = result
                     
                     return message.DEFAULT_MESSAGE               //200 sucesso
                 }else{

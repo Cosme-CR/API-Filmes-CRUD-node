@@ -225,8 +225,8 @@ const buscarFilme = async function(id){
                             }
                         }
 
-                    message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
-                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
+                    message.DEFAULT_MESSAGE.status = message.SUCESS_RESPONSE.status
+                    message.DEFAULT_MESSAGE.status_code = message.SUCESS_RESPONSE.status_code
                     message.DEFAULT_MESSAGE.response.filme = result
 
                     return message.DEFAULT_MESSAGE //200

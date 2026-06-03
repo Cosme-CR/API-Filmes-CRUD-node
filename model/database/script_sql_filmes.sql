@@ -16,8 +16,6 @@ create table tbl_filme(
 
 );
 
-
-#///////////////////////////////////////////
 create table tbl_cargo(
 	id		 			int not null primary key auto_increment,
     cargo	 			varchar(45) not null
@@ -46,24 +44,12 @@ create table tbl_pessoa(
     
 );
 
-
-
-
-
-#
-#
-#
-#modificacaoes e adicoes feita
-#////////////////////////////////////////////////////////////////////////
 #################################################
 create table tbl_pais(
 	id		 			int not null primary key auto_increment,
     pais	 	varchar(100) not null
     
 );
-
-
-
 
 drop table tbl_clasificao_filme_pais;
 drop table tbl_clasificacao;
@@ -100,14 +86,6 @@ create table  tbl_classificacao_filme_pais(
 );
 
 
-
-
-
-
-
-
-
-
 create table  tbl_genero_filme(
 	id		 			int not null primary key auto_increment,
 	id_filme			int not null,
@@ -124,7 +102,7 @@ create table  tbl_genero_filme(
     foreign key			(id_genero)				        # quem sera a FK natabla FK(foren key)
     references			tbl_genero(id)				# de onde vem a FK
 );
-#///////////////////////////////////////////////////////////////////////////
+
 create table  tbl_nascionalidade_pesoa(
 	id		 			int not null primary key auto_increment,
 	id_pessoa			int not null,
@@ -142,7 +120,6 @@ create table  tbl_nascionalidade_pesoa(
     references			tbl_nascionalidade(id)				# de onde vem a FK
 );
 
-#////////////////////////////////////////////////////////
 create table  tbl_producao_filme(
 	id		 			int not null primary key auto_increment,
 	id_filme			int not null,
@@ -165,44 +142,7 @@ create table  tbl_producao_filme(
     foreign key			(id_pessoa)				        # quem sera a FK natabla FK(foren key)
     references			tbl_pessoa(id)				# de onde vem a FK
 );
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////
-#
-#
-#
-#inserir dados
 
-insert into tbl_filme(
-						nome, 
-                        data_lancamento, 
-                        duracao, 
-                        sinopse, 
-                        avaliacao, 
-                        valor,
-                        capa )
-				values(
-						'super mario galaxy: O Filme',
-						'2026-04-02',
-						'01:39:00',
-                        'Mario embarca em uma nova aventura espacial com galáxias inéditas e desafios ainda mais complexos.',
-                        '3',
-                        '57.7',
-                        'https://br.web.img3.acsta.net/img/0a/7d/0a7d99a5da13669f1edde9d6ec00058d.jpg'
-                        );
-                        
-				
-                #mostra todos dados da tabela
-select * from tbl_filme;
 
-#atualiza dado
-update tbl_filme set
-		nome = "nova nome", 
-		data_lancamento = "2000-01-01", 
-		duracao = "02:00", 
-		sinopse = "nova sinopse", 
-		avaliacao = "2", 
-		valor = "10",
-		capa = "nova capa"
-	where id = 5;
 
-DELETE FROM tbl_filme 
-	WHERE id = 13;
+

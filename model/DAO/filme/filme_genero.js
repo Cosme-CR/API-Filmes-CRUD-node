@@ -3,182 +3,105 @@
  *           de relação entre Filme e Genero
  * Data: 27/05/2026
  * Autor: Cosme Ribeiro
- * Versão: 1.0
+ * Versão: 1.1
  ******************************************************************************/
 
-//import da biblioteca para gerenciar o banco de dados mysql no node.js
 const knex          = require('knex')
-//importe do arquivo de configuração para conexao com o banco de dados mysql 
 const knexConfig    = require('../../database_config_knex/knexFile.js')
-//cria a conexao com o banco de dados
 const knexConex     = knex(knexConfig.development)
 
-
-//Função para inserir dados na tabela de genero
 const insertFilmeGenero = async function(filmeGenero){
     try {
-
-        let sql = `insert into tbl_filme_genero (
-                            id_filme,
-                            id_genero
-                            )
-                    values (
-                            ${filmeGenero.id_filme}, 
-                            ${filmeGenero.id_genero}
-                            );`
-
-        //Executar o ScriptSQL no banco de dados                        
+        let sql = `insert into tbl_genero_filme (id_filme, id_genero)
+                    values (${filmeGenero.id_filme}, ${filmeGenero.id_genero});`
         let result = await knexConex.raw(sql)
-    
-
-        if(result)
-            return result[0].insertId //Retorno o ID geraddo no BD
-        else
-            return false
-
+        if(result) return result[0].insertId 
+        else return false
     } catch (error) {
-        //console.log(error)
         return false
     }
 }
 
-//Função para atualizar um genero existente na tabela
 const updateFilmeGenero = async function(filmeGenero){
     try {
-        //Script para atualizar os dados no BD
-        let sql = `update tbl_filme_genero set 
+        let sql = `update tbl_genero_filme set 
                         id_filme            = '${filmeGenero.id_filme}',
                         id_genero           = '${filmeGenero.id_genero}'	
                     where id = ${filmeGenero.id}`
-
-        //Executa o script SQL no BD
         let result = await knexConex.raw(sql)
-
-        if(result)
-            return true
-        else
-            return false
+        return !!result
     } catch (error) {
         return false
     }
 }
 
-//Função para retornar todos os dados da tabela de filme_genero
 const selectAllFilmeGenero = async function(){
     try {
-        //Script para retornar todos os generos
-        let sql = `select * from tbl_filme_genero order by id desc`
-
-        //Executa no banco de dados o script SQL para retornar os generos
+        let sql = `select * from tbl_genero_filme order by id desc`
         let result = await knexConex.raw(sql)
-        
-        //Validação para verificar se o retorno no BD é um Array
-        //Se o scriptSQL der erro, o banco não devolve um array
-        if(Array.isArray(result)){
-            return result[0]
-        }else{
-            return false
-        }
+        if(Array.isArray(result)) return result[0]
+        else return false
     } catch (error) {
-        console.log(error)
         return false
     }
 }
 
-//Função para retornar os dados do genero filtrando pelo ID
 const selectByIdFilmeGenero = async function(id){
     try {
-        let sql = `select * from tbl_filme_genero where id=${id}`
-
+        let sql = `select * from tbl_genero_filme where id=${id}`
         let result = await knexConex.raw(sql)
-
-        if(Array.isArray(result)){
-            return result[0]
-        }else{
-            return false
-        }
+        if(Array.isArray(result)) return result[0]
+        else return false
     } catch (error) {
         return false
     }
 }
 
-//Função para retornar os dados do filme filtrando pelo ID do genero
 const selectFilmesByIdGenero = async function(idGenero){
     try {
         let sql = `select tbl_filme.*
                     from tbl_filme
-                        inner join tbl_filme_genero
-                            on tbl_filme.id = tbl_filme_genero.id_filme
-                        inner join tbl_genero
-                            on tbl_genero.id = tbl_filme_genero.id_genero
-                    where tbl_genero.id=${idGenero}`
-
+                        inner join tbl_genero_filme
+                            on tbl_filme.id = tbl_genero_filme.id_filme
+                    where tbl_genero_filme.id_genero=${idGenero}`
         let result = await knexConex.raw(sql)
-
-        if(Array.isArray(result)){
-            return result[0]
-        }else{
-            return false
-        }
+        if(Array.isArray(result)) return result[0]
+        else return false
     } catch (error) {
         return false
     }
 }
 
-//Função para retornar os dados dos generos filtrando pelo ID do filme
 const selectGenerosByIdFilme = async function(idFilme){
     try {
         let sql = `select tbl_genero.*
                     from tbl_genero
-                        inner join tbl_filme_genero
-                            on tbl_filme.id = tbl_filme_genero.id_filme
-                        inner join tbl_genero
-                            on tbl_genero.id = tbl_filme_genero.id_genero
-                    where tbl_filme.id=${idFilme}`
-
+                        inner join tbl_genero_filme
+                            on tbl_genero.id = tbl_genero_filme.id_genero
+                    where tbl_genero_filme.id_filme=${idFilme}`
         let result = await knexConex.raw(sql)
-
-        if(Array.isArray(result)){
-            return result[0]
-        }else{
-            return false
-        }
+        if(Array.isArray(result)) return result[0]
+        else return false
     } catch (error) {
         return false
     }
 }
 
-//Função para excluir um filme_genero pelo ID
 const deleteFilmeGenero = async function(id){
     try {
-        let sql = `delete from tbl_filme_genero where id=${id}`
-
+        let sql = `delete from tbl_genero_filme where id=${id}`
         let result = await knexConex.raw(sql)
-
-        if(result)
-            return true
-        else
-            return false
+        return !!result
     } catch (error) {
         return false
     }
 }
 
-
-
-//Função para excluir os generos  filtrado o pelo ID do filme
-//esta funcao sera utilizada no pudate do filme pois precisa apagar todos os generos
-//relacionados com o filme para inserir novas relacao
-const deleteGeneroByFilme = async function(idfilme){
+const deleteGeneroByFilme = async function(idFilme){
     try {
-        let sql = `delete from tbl_filme_genero where id_filme=${id}`
-
+        let sql = `delete from tbl_genero_filme where id_filme=${idFilme}`
         let result = await knexConex.raw(sql)
-
-        if(result)
-            return true
-        else
-            return false
+        return !!result
     } catch (error) {
         return false
     }
