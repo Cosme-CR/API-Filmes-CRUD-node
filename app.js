@@ -1,11 +1,10 @@
 const express       = require("express")
 const cors          = require("cors")
-const boddyParser   = require("body-parser")
+
 
 //impot das controlers do projeto
 const controlerFilme = require("./controller/filme/controller_filme.js")
 const controlerCargo = require("./controller/cargo/controller_cargo.js")
-const controlerGenero = require("./controller/genero/controler_genero.js")
 const controlerPais = require("./controller/pais/controller_pais.js")
 
 const controlerClasificacao = require("./controller/clasificacao/controler_clasificacao.js")
@@ -15,9 +14,10 @@ const controlerPessoa = require("./controller/pessoa/controler_pessoa.js")
 
 
 
-
+// remover os dois importes apos migrar td pra routes 
 //criando um objeto para manipular dados do body da api em forato json
 const boddyParserJSON = boddyParser.json()
+const boddyParser   = require("body-parser")
 
 // criar um objeto pra manioular o express
 const app = express()
@@ -184,84 +184,11 @@ app.delete("/v1/senai/locadora/cargo/:id", async function(request,response){
 
 //////////////////////////////////////////////////////////////////////////
 //genero
+// import
 ///////////////////////////////////////////////////////////////////////////
-//inserir genero
-app.post("/v1/senai/locadora/genero", boddyParserJSON, async function(request,response){
+const generoRouter = require("./genero.routes")
 
-    // recebe o conteudo dentro do body da requisição
-    let dados = request.body
-    let conteType = request.headers['content-type']
-
-    //console.log(request.headers)
-                       
-    let result = await controlerGenero.inserirNovoGenero(dados,conteType)
-
-    
-    response.status(result.status_code)
-    response.json(result)
-    
-})
-
-
-
-//atualizar genero
-app.put("/v1/senai/locadora/genero/:id", boddyParserJSON, async function(request,response){
-    //recebe o content type da requisicao
-    let contentType = request.headers['content-type']
-    //recebe o id do registro a ser atualizado
-    let id = request.params.id
-    //recebe os dados enviados no corpo da requisisao
-    let dados =request.body
-    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
-    let result = await controlerGenero.atualizarGenero(dados,id,contentType)
-
-    response.status(result.status_code)
-    response.json(result)
-})
-
-
-
-//buscar genero
-app.get("/v1/senai/locadora/genero/:id", async function(request,response){
-
-    // recebe o id
-    let id = request.params.id
-
-    let result = await controlerGenero.buscarGenero(id)
-    
-    response.status(result.status_code)
-    response.json(result)
-    
-})
-
-//listra genero
-app.get("/v1/senai/locadora/genero", async function(request,response){
-    let result = await controlerGenero.listarGenero()
-
-
-    response.status(result.status_code)
-    response.json(result)
-   
-    
-})
-
-
-//deletar genero
-app.delete("/v1/senai/locadora/genero/:id", async function(request,response){
-   
-    //recebe o id do registro a ser atualizado
-    let id = request.params.id
-
-    //chama a funcao de atualizar na controler e encaminha os dados , id e contenttype
-    let result = await controlerGenero.apagarGenero(id)
-
-
-    response.status(result.status_code)
-    response.json(result)
-})
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
+app.use("/v1/senai/locadora/genero", cors(),generoRouter)
 
 
 
